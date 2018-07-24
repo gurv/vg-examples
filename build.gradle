@@ -1,0 +1,76 @@
+plugins {
+    id 'org.springframework.boot' version '2.0.3.RELEASE' apply false
+    id "com.bmuschko.docker-remote-api" version "3.4.4" apply false
+}
+
+group = 'ru.gurv.vg'
+version = '0.0.1'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'com.bmuschko.docker-remote-api'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "https://repo.spring.io/milestone" }
+        mavenLocal()
+    }
+
+    sourceCompatibility = '1.8'
+
+    bootJar {
+        baseName = rootProject.name + '-' + baseName
+        excludeDevtools = true
+    }
+
+    springBoot {
+        buildInfo()
+    }
+
+    bootRun {
+        systemProperty 'spring.cloud.stream.kafka.binder.brokers', 'localhost:9092'
+    }
+
+    docker {
+        url = 'tcp://192.168.1.33:2373'
+    }
+
+    dependencies {
+        implementation "ru.gurv.vg:vg-dependencies:${rootProject.version}"
+
+        implementation "org.springframework.boot:spring-boot-devtools"
+        implementation "org.springframework.boot:spring-boot-starter-actuator"
+        implementation 'io.micrometer:micrometer-registry-prometheus'
+        implementation "org.codehaus.groovy:groovy-all"
+
+        //TODO https://github.com/gradle/gradle/issues/4979
+        implementation ('org.yaml:snakeyaml:1.19') {
+            force = true
+        }
+
+        // https://github.com/bmuschko/gradle-docker-plugin/issues/467#issuecomment-353865846
+        dockerJava 'com.github.docker-java:docker-java:3.1.0-rc-2'
+        dockerJava 'org.slf4j:slf4j-simple:1.7.5'
+        dockerJava 'cglib:cglib:3.2.0'
+
+        testImplementation "org.springframework.boot:spring-boot-starter-test"
+    }
+
+    tasks.withType(Test) {
+        systemProperties = [
+                'spring.cloud.config.enabled': false,
+        ]
+    }
+
+    task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+        dependsOn build
+        dockerFile file("src/main/docker/Dockerfile")
+        inputDir = file(".")
+        tag = "vg/${project.name}:latest"
+        buildArgs = [
+                'VG_VERSION': version,
+        ]
+    }
+}

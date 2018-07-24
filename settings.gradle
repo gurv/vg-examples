@@ -1,0 +1,13 @@
+pluginManagement {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2" }
+        maven { url 'http://repo.spring.io/plugins-release' }
+    }
+}
+
+enableFeaturePreview('IMPROVED_POM_SUPPORT')
+
+rootProject.name = 'vg-examples'
+
+include 'operation'
+include 'account'

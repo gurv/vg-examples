@@ -1,0 +1,35 @@
+server:
+  port: 8102
+spring:
+  cloud:
+    refresh:
+      #TODO временное решение, ждем исправления https://github.com/spring-projects/spring-boot/issues/13042
+      refreshable: false
+    stream:
+      bindings:
+        input:
+          destination: operations
+      kafka:
+        binder:
+          brokers: localhost:9092
+  datasource:
+    url: jdbc:h2:mem:sample-account
+    userName: sa
+    password:
+    driver-class-name: org.h2.Driver
+    platform: h2
+    initialization-mode: embedded
+    continue-on-error: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+    open-in-view: true
+  h2:
+    console:
+      path: /db-console
+  devtools:
+    livereload:
+      port: 35737
+    restart:
+      log-condition-evaluation-delta: false
