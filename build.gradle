@@ -4,7 +4,11 @@ plugins {
 }
 
 group = 'ru.gurv.vg'
-version = '0.0.1'
+version = '0.1.0'
+
+ext {
+    bomVersion = '0.2.0'
+}
 
 subprojects {
     apply plugin: 'java'
@@ -38,7 +42,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "ru.gurv.vg:vg-dependencies:${rootProject.version}"
+        implementation "ru.gurv.vg:vg-dependencies:${rootProject.bomVersion}"
 
         implementation "org.springframework.boot:spring-boot-devtools"
         implementation "org.springframework.boot:spring-boot-starter-actuator"
@@ -50,10 +54,10 @@ subprojects {
             force = true
         }
 
-        // https://github.com/bmuschko/gradle-docker-plugin/issues/467#issuecomment-353865846
-        dockerJava 'com.github.docker-java:docker-java:3.1.0-rc-2'
-        dockerJava 'org.slf4j:slf4j-simple:1.7.5'
-        dockerJava 'cglib:cglib:3.2.0'
+        //TODO https://github.com/bmuschko/gradle-docker-plugin/issues/467#issuecomment-353865846
+        dockerJava 'com.github.docker-java:docker-java'
+        dockerJava 'org.slf4j:slf4j-simple'
+        dockerJava 'cglib:cglib'
 
         testImplementation "org.springframework.boot:spring-boot-starter-test"
     }
