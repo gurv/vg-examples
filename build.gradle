@@ -7,7 +7,7 @@ group = 'ru.gurv.vg'
 version = '0.1.0'
 
 ext {
-    bomVersion = '0.2.0'
+    bomVersion = '0.3.0'
 }
 
 subprojects {
