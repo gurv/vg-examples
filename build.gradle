@@ -1,13 +1,13 @@
 plugins {
     id 'org.springframework.boot' version '2.0.3.RELEASE' apply false
-    id "com.bmuschko.docker-remote-api" version "3.4.4" apply false
+    id "com.bmuschko.docker-remote-api" version "3.6.1" apply false
 }
 
 group = 'ru.gurv.vg'
 version = '0.1.0'
 
 ext {
-    bomVersion = '0.3.0'
+    bomVersion = '0.4.0-SNAPSHOT'
 }
 
 subprojects {
@@ -37,10 +37,6 @@ subprojects {
         systemProperty 'spring.cloud.stream.kafka.binder.brokers', 'localhost:9092'
     }
 
-    docker {
-        url = 'tcp://192.168.1.33:2373'
-    }
-
     dependencies {
         implementation "ru.gurv.vg:vg-dependencies:${rootProject.bomVersion}"
 
@@ -53,11 +49,6 @@ subprojects {
         implementation ('org.yaml:snakeyaml:1.19') {
             force = true
         }
-
-        //TODO https://github.com/bmuschko/gradle-docker-plugin/issues/467#issuecomment-353865846
-        dockerJava 'com.github.docker-java:docker-java'
-        dockerJava 'org.slf4j:slf4j-simple'
-        dockerJava 'cglib:cglib'
 
         testImplementation "org.springframework.boot:spring-boot-starter-test"
     }
