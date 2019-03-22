@@ -8,7 +8,7 @@ group = 'ru.gurv.vg'
 version = '0.1.0'
 
 ext {
-    bomVersion = '0.4.0-SNAPSHOT'
+    bomVersion = '0.1.0-SNAPSHOT'
 }
 
 subprojects {
@@ -23,6 +23,7 @@ subprojects {
         jcenter()
         maven { url "https://repo.spring.io/milestone" }
         mavenLocal()
+        maven { url "https://oss.sonatype.org/service/local/repositories/snapshots/content/" }
     }
 
     sourceCompatibility = '1.8'
@@ -41,7 +42,7 @@ subprojects {
     }
 
     dependencies {
-        implementation "ru.gurv.vg:vg-dependencies:${rootProject.bomVersion}"
+        implementation "io.github.gurv:vg-dependencies:${rootProject.bomVersion}"
 
         implementation "org.springframework.boot:spring-boot-devtools"
         implementation "org.springframework.boot:spring-boot-starter-actuator"
