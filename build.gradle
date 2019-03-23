@@ -55,11 +55,6 @@ subprojects {
         implementation 'io.micrometer:micrometer-registry-prometheus'
         implementation "org.codehaus.groovy:groovy-all"
 
-        //TODO https://github.com/gradle/gradle/issues/4979
-        implementation ('org.yaml:snakeyaml:1.19') {
-            force = true
-        }
-
         testImplementation "org.springframework.boot:spring-boot-starter-test"
     }
 
