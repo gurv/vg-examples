@@ -1,5 +1,6 @@
 plugins {
     id 'org.springframework.boot' version '2.0.3.RELEASE' apply false
+    id "io.spring.dependency-management" version "1.0.7.RELEASE" apply false
     id "com.bmuschko.docker-remote-api" version "3.6.1" apply false
     id "org.sonarqube" version "2.6.2" apply false
 }
@@ -14,6 +15,7 @@ ext {
 subprojects {
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
     apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'org.sonarqube'
     apply plugin: 'jacoco'
@@ -41,9 +43,13 @@ subprojects {
         systemProperty 'spring.cloud.stream.kafka.binder.brokers', 'localhost:9092'
     }
 
-    dependencies {
-        implementation "io.github.gurv:vg-dependencies:${rootProject.bomVersion}"
+    dependencyManagement {
+        imports {
+            mavenBom "io.github.gurv:vg-dependencies:${rootProject.bomVersion}"
+        }
+    }
 
+    dependencies {
         implementation "org.springframework.boot:spring-boot-devtools"
         implementation "org.springframework.boot:spring-boot-starter-actuator"
         implementation 'io.micrometer:micrometer-registry-prometheus'
