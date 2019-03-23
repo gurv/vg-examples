@@ -1,12 +1,15 @@
 plugins {
     id 'org.springframework.boot' version '2.0.3.RELEASE' apply false
     id "io.spring.dependency-management" version "1.0.7.RELEASE" apply false
-    id "com.bmuschko.docker-remote-api" version "3.6.1" apply false
+    id "com.bmuschko.docker-remote-api" version "4.6.2" apply false
     id "org.sonarqube" version "2.6.2" apply false
 }
 
 group = 'ru.gurv.vg'
-version = '0.1.0'
+version = '0.1.0-SNAPSHOT'
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 
 ext {
     bomVersion = '0.1.0-SNAPSHOT'
@@ -30,8 +33,13 @@ subprojects {
 
     sourceCompatibility = '1.8'
 
+    ext {
+        imageName = "gurv/${rootProject.name}-${project.name}:latest"
+    }
+
     bootJar {
-        baseName = rootProject.name + '-' + baseName
+        baseName = "${rootProject.name}-${project.name}"
+        version = rootProject.version
         excludeDevtools = true
     }
 
@@ -41,6 +49,14 @@ subprojects {
 
     bootRun {
         systemProperty 'spring.cloud.stream.kafka.binder.brokers', 'localhost:9092'
+    }
+
+    docker {
+        registryCredentials {
+            username = System.getenv('DOCKER_USERNAME')
+            password = System.getenv('DOCKER_PASSWORD')
+            email = 'vladimir.gurinovich@gmail.com'
+        }
     }
 
     dependencyManagement {
@@ -64,13 +80,19 @@ subprojects {
         ]
     }
 
-    task buildImage(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) {
+    task buildImage(type: DockerBuildImage) {
         dependsOn build
-        dockerFile file("src/main/docker/Dockerfile")
+        dockerFile = file("src/main/docker/Dockerfile")
         inputDir = file(".")
-        tag = "vg/sample-${project.name}:latest"
+        tags.add(project.imageName)
         buildArgs = [
                 'VG_VERSION': version,
+                'JAR_FILE': "build/libs/${rootProject.name}-${project.name}-${rootProject.version}.jar",
         ]
+    }
+
+    task pushImage(type: DockerPushImage) {
+        dependsOn buildImage
+        imageName = project.imageName
     }
 }
