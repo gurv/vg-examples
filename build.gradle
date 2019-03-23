@@ -5,7 +5,7 @@ plugins {
     id "org.sonarqube" version "2.6.2" apply false
 }
 
-group = 'ru.gurv.vg'
+group = 'io.github.gurv'
 version = '0.1.0-SNAPSHOT'
 
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
@@ -22,6 +22,7 @@ subprojects {
     apply plugin: 'com.bmuschko.docker-remote-api'
     apply plugin: 'org.sonarqube'
     apply plugin: 'jacoco'
+    apply plugin: 'maven-publish'
 
     repositories {
         mavenCentral()
@@ -94,5 +95,53 @@ subprojects {
     task pushImage(type: DockerPushImage) {
         dependsOn buildImage
         imageName = project.imageName
+    }
+
+    publishing {
+        publications {
+            bootJava(MavenPublication) {
+                artifact bootJar
+                groupId = rootProject.group
+                artifactId = "${rootProject.name}-${project.name}"
+                version = rootProject.version
+                pom {
+                    name = project.name
+                    url = 'https://gurv.github.io/vg-doc/index.html'
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'hhttp://www.opensource.org/licenses/mit-license.php'
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = 'gurv'
+                            name = 'Vladimir Gurinovich'
+                            email = 'vladimir.gurinovich@gmail.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git:git://github.com/gurv/vg-examples.git'
+                        developerConnection = 'scm:git:ssh://github.com/gurv/vg-examples.git'
+                    }
+                }
+            }
+            maven(MavenPublication) {
+                from components.java
+            }
+        }
+        
+        repositories {
+            maven {
+                name = 'ci'
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+                url = rootProject.bomVersion.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username System.env.CI_DEPLOY_USERNAME
+                    password System.env.CI_DEPLOY_PASSWORD
+                }
+            }
+        }
     }
 }
