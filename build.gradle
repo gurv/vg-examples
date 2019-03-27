@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.0.3.RELEASE' apply false
     id "io.spring.dependency-management" version "1.0.7.RELEASE" apply false
     id "com.bmuschko.docker-remote-api" version "4.6.2" apply false
-    id "org.sonarqube" version "2.6.2" apply false
+    id "org.sonarqube" version "2.7" apply false
 }
 
 group = 'io.github.gurv'
@@ -142,6 +142,22 @@ subprojects {
                     password System.env.CI_DEPLOY_PASSWORD
                 }
             }
+        }
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.host.url", "https://sonarcloud.io"
+            property "sonar.organization", "gurv-github"
+            property "sonar.projectVersion", "${project.version}"
+            property "sonar.sources", "src"
+            property "sonar.java.binaries", "build/classes"
+            property "sonar.java.libraries", "build/libs/*.jar"
+            property "sonar.exclusions", "**/*Test*/**"
+            property "sonar.test.inclusions", "**/*Test*/**"
+            property "sonar.links.ci", "https://travis-ci.org/gurv/vg-examples"
+            property "sonar.links.scm", "https://github.com/gurv/vg-examples"
+            property "sonar.links.issue", "https://github.com/gurv/vg-examples/issues"
         }
     }
 }
