@@ -10,5 +10,5 @@ enableFeaturePreview('IMPROVED_POM_SUPPORT')
 
 rootProject.name = 'vg-examples'
 
-include 'operation'
-include 'account'
+include 'vg-examples-operation'
+include 'vg-examples-account'
