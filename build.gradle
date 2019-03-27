@@ -35,11 +35,11 @@ subprojects {
     sourceCompatibility = '1.8'
 
     ext {
-        imageName = "gurv/${rootProject.name}-${project.name}:latest"
+        imageName = "gurv/${project.name}:latest"
     }
 
     bootJar {
-        baseName = "${rootProject.name}-${project.name}"
+        baseName = "${project.name}"
         version = rootProject.version
         excludeDevtools = true
     }
@@ -88,7 +88,7 @@ subprojects {
         tags.add(project.imageName)
         buildArgs = [
                 'VG_VERSION': version,
-                'JAR_FILE': "build/libs/${rootProject.name}-${project.name}-${rootProject.version}.jar",
+                'JAR_FILE': "build/libs/${project.name}-${rootProject.version}.jar",
         ]
     }
 
@@ -102,7 +102,7 @@ subprojects {
             bootJava(MavenPublication) {
                 artifact bootJar
                 groupId = rootProject.group
-                artifactId = "${rootProject.name}-${project.name}"
+                artifactId = "${project.name}"
                 version = rootProject.version
                 pom {
                     name = project.name
