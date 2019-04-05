@@ -1,1 +1,22 @@
 = Примеры
+
+== ./
+
+```
+./gradlew build
+# (vg-examples-operation)
+./gradlew vg-examples-operation:bootRun
+```
+
+== Docker
+
+```
+./gradlew buildImage
+# (vg-examples-operation)
+docker run -d gurv/vg-examples-operation
+```
+
+
+== Documentation
+
+https://gurv.github.io/vg-doc/index.html
