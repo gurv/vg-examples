@@ -1,5 +1,8 @@
 = Примеры
 
+image:https://img.shields.io/travis/gurv/vg-examples/master.svg[Build Status (Travis CI),link=https://travis-ci.org/gurv/examples]
+image:https://sonarcloud.io/api/project_badges/measure?project=io.github.gurv:examples&metric=alert_status[Sonarcloud Status,link=https://sonarcloud.io/dashboard?id=io.github.gurv%3Aexamples]
+
 == ./
 
 ```
@@ -15,7 +18,6 @@
 # (vg-examples-operation)
 docker run -d gurv/vg-examples-operation
 ```
-
 
 == Documentation
 
