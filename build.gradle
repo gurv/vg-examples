@@ -11,8 +11,22 @@ version = '0.1.0-SNAPSHOT'
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 
+apply plugin: 'org.sonarqube'
+apply plugin: 'jacoco'
+
 ext {
     bomVersion = '0.1.0-SNAPSHOT'
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "gurv-github"
+        property "sonar.projectVersion", "${project.version}"
+        property "sonar.links.ci", "https://travis-ci.org/gurv/vg-examples"
+        property "sonar.links.scm", "https://github.com/gurv/vg-examples"
+        property "sonar.links.issue", "https://github.com/gurv/vg-examples/issues"
+    }
 }
 
 subprojects {
@@ -20,8 +34,6 @@ subprojects {
     apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'com.bmuschko.docker-remote-api'
-    apply plugin: 'org.sonarqube'
-    apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
 
     repositories {
@@ -147,17 +159,13 @@ subprojects {
 
     sonarqube {
         properties {
-            property "sonar.host.url", "https://sonarcloud.io"
-            property "sonar.organization", "gurv-github"
-            property "sonar.projectVersion", "${project.version}"
-            property "sonar.sources", "src"
-            property "sonar.java.binaries", "build/classes"
-            property "sonar.java.libraries", "build/libs/*.jar"
-            property "sonar.exclusions", "**/*Test*/**"
-            property "sonar.test.inclusions", "**/*Test*/**"
-            property "sonar.links.ci", "https://travis-ci.org/gurv/vg-examples"
-            property "sonar.links.scm", "https://github.com/gurv/vg-examples"
-            property "sonar.links.issue", "https://github.com/gurv/vg-examples/issues"
+            property "sonar.sources", "${project.projectDir}/src"
+            property "sonar.java.binaries", "${project.projectDir}/build/classes"
+            property "sonar.java.libraries", "${project.projectDir}/build/libs/*.jar"
+            property "sonar.exclusions", "${project.projectDir}/**/*Test*/**"
+            property "sonar.test.inclusions", "${project.projectDir}/**/*Test*/**"
         }
     }
+
+    rootProject.tasks.sonarqube.dependsOn build
 }
