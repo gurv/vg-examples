@@ -1,21 +1,28 @@
 plugins {
     id 'org.springframework.boot' version '2.1.8.RELEASE' apply false
     id "io.spring.dependency-management" version "1.0.8.RELEASE" apply false
-    id "com.bmuschko.docker-remote-api" version "4.6.2" apply false
+    id 'com.bmuschko.docker-remote-api' version '5.2.0' apply false
     id "org.sonarqube" version "2.7.1" apply false
 }
 
 group = 'io.github.gurv'
 version = '0.2.0-SNAPSHOT'
 
+import com.bmuschko.gradle.docker.DockerRegistryCredentials
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.DockerTagImage
 
 apply plugin: 'org.sonarqube'
 apply plugin: 'jacoco'
 
 ext {
     bomVersion = '0.2.0-SNAPSHOT'
+
+    email = 'vladimir.gurinovich@gmail.com'
+    
+    dockerhubRegistry = 'docker.io/gurv'
+    githubRegistry = 'docker.pkg.github.com/gurv/vg-core'
 }
 
 sonarqube {
@@ -48,7 +55,8 @@ subprojects {
     targetCompatibility = 1.11
 
     ext {
-        imageName = "gurv/${project.name}:latest"
+        imageName = project.name
+        imageVersion = "latest"
     }
 
     bootJar {
@@ -67,9 +75,7 @@ subprojects {
 
     docker {
         registryCredentials {
-            username = System.getenv('DOCKER_USERNAME')
-            password = System.getenv('DOCKER_PASSWORD')
-            email = 'vladimir.gurinovich@gmail.com'
+            email = rootProject.email
         }
     }
 
@@ -98,16 +104,47 @@ subprojects {
         dependsOn build
         dockerFile = file("src/main/docker/Dockerfile")
         inputDir = file(".")
-        tags.add(project.imageName)
+        tags.add("${project.imageName}:${project.imageVersion}")
         buildArgs = [
                 'VG_VERSION': version,
                 'JAR_FILE': "build/libs/${project.name}-${rootProject.version}.jar",
         ]
     }
 
-    task pushImage(type: DockerPushImage) {
+    task tagImageDockerHub(type: DockerTagImage) {
         dependsOn buildImage
-        imageName = project.imageName
+        imageId = project.imageName
+        repository = "${rootProject.dockerhubRegistry}/${project.imageName}"
+        tag = project.imageVersion
+    }
+
+    task pushImageToDockerHub(type: DockerPushImage) {
+        dependsOn tagImageDockerHub
+        imageName = "${rootProject.dockerhubRegistry}/${project.imageName}"
+        tag = project.imageVersion
+        def credentials = new DockerRegistryCredentials(project.objects)
+        credentials.url.set rootProject.dockerhubRegistry
+        credentials.username.set findProperty('dockerhubUsername') ?: System.getenv('CI_DOCKER_USERNAME')
+        credentials.password.set findProperty('dockerhubPassword') ?: System.getenv('CI_DOCKER_PASSWORD')
+        registryCredentials = credentials
+    }
+
+    task tagImageGitHub(type: DockerTagImage) {
+        dependsOn buildImage
+        imageId = project.imageName
+        repository = "${rootProject.githubRegistry}/${project.imageName}"
+        tag = project.imageVersion
+    }
+
+    task pushImageToGitHub(type: DockerPushImage) {
+        dependsOn tagImageGitHub
+        imageName = "${rootProject.githubRegistry}/${project.imageName}"
+        tag = project.imageVersion
+        def credentials = new DockerRegistryCredentials(project.objects)
+        credentials.url.set rootProject.githubRegistry
+        credentials.username.set findProperty('githubUsername') ?: System.getenv('GITHUB_USERNAME')
+        credentials.password.set findProperty('githubToken') ?: System.getenv('GITHUB_TOKEN')
+        registryCredentials = credentials
     }
 
     publishing {
