@@ -22,7 +22,7 @@ ext {
     email = 'vladimir.gurinovich@gmail.com'
     
     dockerhubRegistry = 'docker.io/gurv'
-    githubRegistry = 'docker.pkg.github.com/gurv/vg-core'
+    githubRegistry = 'docker.pkg.github.com/gurv/vg-examples'
 }
 
 sonarqube {
