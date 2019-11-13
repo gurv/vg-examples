@@ -17,7 +17,12 @@ apply plugin: 'org.sonarqube'
 apply plugin: 'jacoco'
 
 ext {
-    bomVersion = '0.2.0-SNAPSHOT'
+    // FIXME на этом
+    //      gradle test
+    // ошибки:
+    //     AccountSampleApplicationTest. contextLoads
+    //     OperationProcessorTest. handle
+    bomVersion = '0.3.0-SNAPSHOT'
 
     email = 'vladimir.gurinovich@gmail.com'
     
