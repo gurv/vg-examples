@@ -1,12 +1,10 @@
 = Examples
 
-image:https://img.shields.io/travis/gurv/vg-examples/master.svg[Build Status (Travis CI),link=https://travis-ci.org/gurv/examples]
+image:https://github.com/gurv/vg-core/workflows/CI/badge.svg[build]
 image:https://sonarcloud.io/api/project_badges/measure?project=io.github.gurv:examples&metric=alert_status[Sonarcloud Status,link=https://sonarcloud.io/dashboard?id=io.github.gurv%3Aexamples]
 image:https://img.shields.io/github/contributors/gurv/vg-examples.svg[Contributors,link=https://github.com/gurv/vg-examples/graphs/contributors]
 image:https://img.shields.io/github/commit-activity/m/gurv/vg-examples.svg[Activity,link=https://github.com/gurv/vg-examples/pulse]
 image:https://img.shields.io/github/repo-size/gurv/vg-examples.svg[repo size]
-image:https://dev.azure.com/gurv/vg/_apis/build/status/vg-examples?branchName=master[Build Status]
-image:https://github.com/gurv/vg-examples/workflows/ci/badge.svg[GitHub CI]
 
 * https://gurv.github.io/vg-doc/index.html[Documentation]
 
