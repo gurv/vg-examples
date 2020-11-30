@@ -6,8 +6,6 @@ pluginManagement {
     }
 }
 
-enableFeaturePreview('IMPROVED_POM_SUPPORT')
-
 rootProject.name = 'vg-examples'
 
 include 'vg-examples-operation'
